@@ -1,0 +1,64 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- 1. Создание основного Gui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "CustomControlUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+-- 2. Главный фрейм (окно)
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.fromOffset(220, 150)
+mainFrame.Position = UDim2.fromOffset(50, 50)
+mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Draggable = true -- Позволяет перетаскивать окно мышкой/пальцем
+mainFrame.Parent = screenGui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 8)
+corner.Parent = mainFrame
+
+-- 3. Заголовок
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 35)
+title.BackgroundTransparency = 1
+title.Text = "Control Panel"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 16
+title.Parent = mainFrame
+
+-- 4. Кнопка изменения скорости
+local speedButton = Instance.new("TextButton")
+speedButton.Size = UDim2.fromOffset(180, 35)
+speedButton.Position = UDim2.fromOffset(20, 50)
+speedButton.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
+speedButton.Text = "Set Speed: 32"
+speedButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+speedButton.Font = Enum.Font.Gotham
+speedButton.TextSize = 14
+speedButton.Parent = mainFrame
+
+local btnCorner = Instance.new("UICorner")
+btnCorner.CornerRadius = UDim.new(0, 6)
+btnCorner.Parent = speedButton
+
+-- Логика изменения WalkSpeed
+local defaultSpeed = 16
+local boostedSpeed = 32
+local isBoosted = false
+
+speedButton.MouseButton1Click:Connect(function()
+	local character = LocalPlayer.Character
+	if character then
+		local humanoid = character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			isBoosted = not isBoosted
+			humanoid.WalkSpeed = isBoosted and boostedSpeed or defaultSpeed
+			speedButton.Text = "Set Speed: " .. (isBoosted and tostring(boostedSpeed) or tostring(defaultSpeed))
+		end
+	end
+end)
